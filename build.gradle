@@ -1,37 +1,42 @@
-buildscript {    // Configuration for building
+buildscript {
 	repositories {
-		jcenter()    // Bintray's repository - a fast Maven Central mirror & more
+		jcenter()
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'    // Latest 1.x.x release
+		classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
 	}
 }
 
-repositories {   // repositories for Jar's you access in your code
+repositories {
 	maven {
-		url 'https://oss.sonatype.org/content/repositories/snapshots' // SNAPSHOT repository (if needed)
+		url 'https://oss.sonatype.org/content/repositories/snapshots'
 	}
 	mavenCentral()
 	jcenter()
 }
 
-apply plugin: 'java'                              // standard Java tasks
-apply plugin: 'war'                               // standard Web Archive plugin
-apply plugin: 'com.google.cloud.tools.appengine'  // App Engine tasks
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'com.google.cloud.tools.appengine'
 
 dependencies {
-	compile 'com.google.appengine:appengine-api-1.0-sdk:+'  // Latest App Engine Api's
+	compile 'com.google.appengine:appengine-api-1.0-sdk:+'
 	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
 
 	compile 'jstl:jstl:1.2'
 
-	implementation 'org.springframework.boot:spring-boot-starter-web:2.2.5.RELEASE'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat:2.2.5.RELEASE'
+//	implementation 'org.springframework.boot:spring-boot-starter-web:2.2.5.RELEASE'
+//	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat:2.2.5.RELEASE'
+
+	compile "org.springframework.boot:spring-boot-starter-web:2.2.5.RELEASE", {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+	}
+	compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test:2.2.5.RELEASE') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-  compile 'com.google.cloud:google-cloud:+'   // Latest Cloud API's http://googlecloudplatform.github.io/google-cloud-java
+  	compile 'com.google.cloud:google-cloud:+'
 
 	testCompile 'junit:junit:4.12'
 	testCompile 'com.google.truth:truth:0.33'
@@ -42,14 +47,17 @@ dependencies {
 	testCompile 'com.google.appengine:appengine-tools-sdk:+'
 }
 
-// Always run unit tests
+configurations.all {
+	exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+}
+
 appengineDeploy.dependsOn test
 appengineStage.dependsOn test
 
-appengine {  // App Engine tasks configuration
-	deploy {   // deploy configuration
-		projectId = System.getenv('GOOGLE_CLOUD_PROJECT')
-		version = '1'
+appengine {
+	deploy {
+		projectId = 'GCLOUD_CONFIG'
+		version = '7'
 	}
 }
 
@@ -70,5 +78,5 @@ test {
 
 group = 'com.gcloud_training'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8     // App Engine Flexible uses Java 8
-targetCompatibility = 1.8     // App Engine Flexible uses Java 8
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
