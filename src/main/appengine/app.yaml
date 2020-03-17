@@ -13,3 +13,11 @@ resources:
     - name: zen
       volume_type: tmpfs
       size_gb: 0.5
+
+runtime_config:
+  jdk: openjdk8
+env_variables:
+  SPRING_PROFILES_ACTIVE: "gcp,mysql"
+
+manual_scaling:
+  instances: 1
