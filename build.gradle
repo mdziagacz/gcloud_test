@@ -56,8 +56,10 @@ appengineStage.dependsOn test
 
 appengine {
 	deploy {
+		stopPreviousVersion = true
+		promote = true
 		projectId = 'GCLOUD_CONFIG'
-		version = '7'
+		version = 'GCLOUD_CONFIG'
 	}
 }
 
